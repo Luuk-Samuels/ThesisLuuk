@@ -1,0 +1,6 @@
+
+Data.m = file containing the class setup of the dataset the simulations are stored in.
+
+Simulation = folder with scripts used for simulations
+
+Figures = folder with scripts used to make the figures
