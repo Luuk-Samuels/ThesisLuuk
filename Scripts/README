@@ -1,5 +1,5 @@
 
-Data.m = file containing the class setup of the dataset the simulations are stored in.
+Data.m = file containing the class setup of the dataset the simulations are stored in. This file is used in almost all the scripts.
 
 Simulation = folder with scripts used for simulations
 
