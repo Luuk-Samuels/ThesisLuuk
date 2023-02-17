@@ -1,5 +1,8 @@
 Here the explanation of which script belongs to which figure will be given.
 
+!!!!!Dont forget that for almost all these scripts the class system file (Data.m) and the dataset with simulations (DataSetf.mat) should be downloaded
+as well and put in the same folder as the scripts.!!!!!
+
 Figures in the paper:
 
 Fig3: This 
