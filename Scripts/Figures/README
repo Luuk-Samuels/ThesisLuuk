@@ -3,13 +3,57 @@ Here the explanation of which script belongs to which figure will be given.
 !!!!!Dont forget that for almost all these scripts the class system file (Data.m) and the dataset with simulations (DataSetf.mat) should be downloaded
 as well and put in the same folder as the scripts.!!!!!
 
-Figures in the paper:
+The scripts needed to get the result:
 
-Fig3: This 
+!!!!In the scripts itself is explained what else is needed to correctly execute them!!!!
 
-Fig4: 
+Paper:
 
-Fig5:
+Fig3: AdvanceCheck.m
 
-Fig7: 
+Fig4: InitialPlot3couple.m
+
+Fig5: FinalCriteriaPlot.m
+
+Fig7: Test_data_experiment.m
+
+Supplemental:
+
+Fig. S3: INOUTSIN.m
+
+Fig. S4: INOUTSIN.m
+
+Fig. S5: INOUTSIN.m
+
+Fig. S6: PlottingLinesKeypoints.m
+
+Fig. S7: AnsysSimuulationScript.txt (This text file should be run to get the same analysis result as conducted for this figure, after which the frames would have to be screen shotted)
+
+Fig. S8: AdvanceCheck.m
+
+Fig. S9: This figure was made using the solidworks file that can be found in ThesisLuuk/Manufacturing
+
+Fig. S11: Test_data_experiment.m
+
+Fig. S12: Test_data_experiment.m
+
+Fig. S13: test_track_dot.m
+
+Fig. S16: InitialPlot3couple.m
+
+Fig. S17: TilePlottingGAf.m
+
+Fig. S18: TilePlottingSinf.m
+
+Fig. S19: TilePlottingForcef.m
+
+Fig. S20: criteriaplotsupplemental.m
+
+Fig. S21: ValidatingPlots.m
+
+
+
+
+
+
 
