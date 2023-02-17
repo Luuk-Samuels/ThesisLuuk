@@ -1,0 +1,213 @@
+FINISH
+pi = 3.14159265359
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+x1 = 0
+y1 = 0 
+LOCAL, 11, 0, x1, y1, 0, 0, 0, 0   	!!!!defines a new local coordinate system
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!Flexure cross section!!!!!!!!!!!!!!!!!!!!!
+
+Flexure_t = (9e-4)			!!!!thickness of the flexures
+Flexure_t_supp = (9e-4)			!!!!thickness of the flexures
+Flexure_depth = (8e-3)		!!!!depth of the flexures
+Flexure_depth_supp = (12e-3)
+
+OOP_length = Flexure_depth/2+2e-3+Flexure_depth_supp/2 !length in oop direction to keypoints of input/output
+imp = 1e-4				!!!!size of imperfection
+
+E = 1700e6	     			!!!!E-modulus, (in lumped file 3.5e9)				
+v = 0.4  	     			!!!!poisson ratio
+
+!!!!!!!!!!!!!!!!!Important dimensions of the mechanism!!!!!!!!!!!!!!!
+
+/inp,parameter,inp
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+n_elements = 30
+substeps = 100
+
+/PREP7
+ET,1,BEAM188 			!!!!type of beam, timoshenko 188
+ET,2,MPC184
+KEYOPT,2,1,1 			!!!!choose options for 2nd element type, 1 is the number of the option and 1 is the input, here this corresponds to a rigid beam
+
+
+/ESHAPE,1  			!!!!solid shape display instead of simple lines (0)
+SECTYPE,1,beam,RECT  		!!!!rectangular beam with identification number 1
+SECDATA ,Flexure_t , Flexure_depth 	!!!Height and width of flexure cross section
+
+SECTYPE,2,beam,RECT
+SECDATA,Flexure_t_supp,Flexure_depth_supp
+
+MP,EX,1,E  			! Young's modulus 
+MP,PRXY,1,v    			! Poisson's ratio 
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!! LITF JOINT COMBINATION !!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+CSYS,11       			!!!!activates coordinate system 11
+K,1, 0, 0, 0				
+K,2, 0, L33/2, 0
+K,3, 0, L33, 0
+K,4, -L11/2, 0, 0
+K,5, -L11/2, L33, 0
+K,6, L11/2, 0, 0
+K,7, L11/2, L33, 0
+
+K,8, -L11/2-Llif*cos(Alpha), -Llif*sin(Alpha), 0
+K,9, -L11/2-Llif*cos(Alpha), L33+Llif*sin(Alpha), 0
+K,10, L11/2+Llif*cos(Alpha), -Llif*sin(Alpha), 0
+K,11, L11/2+Llif*cos(Alpha), L33+Llif*sin(Alpha), 0
+
+K,12, 0, L33/2, OOP_length
+
+K,13,-w, -L+L33/2,OOP_length
+K,14, w, -L+L33/2,OOP_length
+K,15,-w, L+L33/2, OOP_length
+K,16, w, L+L33/2, OOP_length
+
+K,17, 0, L33/2, -OOP_length
+K,18,-L, w+L33/2, -OOP_length
+K,19,-L, -w+L33/2, -OOP_length
+K,20, L, w+L33/2, -OOP_length
+K,21, L, -w+L33/2, -OOP_length
+
+!Keypoints to add imperfections
+K,22,-w-imp,L33/2,OOP_length		!input shuttle
+K,23,w+imp,L33/2,OOP_length
+
+K,24,0,-w-imp+L33/2,-OOP_length	!output shuttle
+K,25,0,+w+imp+L33/2,-OOP_length
+
+K,26,-L11/2-Llif*cos(Alpha)/2+imp*sin(Alpha),-Llif*sin(Alpha)/2	-imp*cos(Alpha)	!Butterfly mechanism
+K,27,-L11/2-Llif*cos(Alpha)/2+imp*sin(Alpha),L33+Llif*sin(Alpha)/2+imp*cos(Alpha)
+K,28,L11/2+Llif*cos(Alpha)/2-imp*sin(Alpha), L33+Llif*sin(Alpha)/2+imp*cos(Alpha)
+K,29,L11/2+Llif*cos(Alpha)/2-imp*sin(Alpha),-Llif*sin(Alpha)/2-imp*cos(Alpha)
+
+
+*GET,Line_ID1,LINE,0,NUM,MAXD 	!!!!retrieve highest area number defined and store in Line_id1
+!!!!!!!!!Flexiblelines!!!!!!!
+CSYS,11 				!!!!use coordinate system 11
+!butterfly 
+L,4,26
+L,26,8
+
+L,6,29
+L,29,10
+
+L,5,27
+L,27,9
+
+L,7,28
+L,28,11
+
+*GET,Line_ID2,LINE,0,NUM,MAXD
+
+!input shuttle
+L,13,22
+L,22,15
+
+L,14,23
+L,23,16
+
+!output shuttle
+L,18,25
+L,25,20
+
+L,19,24
+L,24,21
+
+*GET,Line_ID3,LINE,0,NUM,MAXD 	!!!! retrieve highest area number defined, here 8 
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!Rigidlines!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+CSYS,11
+L,1,4
+L,1,6
+L,3,5
+L,3,7
+L,2,8
+L,2,9
+L,2,10
+L,2,11
+
+L,1,12
+L,12,15			!the three following are for parallel in/output 
+L,12,16
+L,15,16
+
+
+L,3,17
+L,17,20			!the three following are for parallel in/output 
+L,17,21
+L,20,21
+
+*GET,Line_ID4,LINE,0,NUM,MAXD 	!!!! value is 22
+
+TYPE,1 		 		!!!!pointer to element type
+SECNUM,1 	 		!!!!pointer to section type
+REAL,1				!!!!real constant type pointer, which is not defined but whatever
+LSEL,S,LINE,,Line_ID1+1 ,Line_ID2 	!!!!select a subset of lines, new set, line, vmin to vmax
+LESIZE,ALL, , ,n_elements 		!!!!define number of elements per line
+LMESH,ALL 			!!!!mesh selected lines: generate nodes and line elements
+
+TYPE,1
+SECNUM,2
+LSEL,S,LINE,,Line_ID2+1,Line_ID3
+LESIZE,ALL,,,n_elements
+LMESH,ALL
+
+TYPE,2
+SECNUM,1
+REAL,1
+LSEL,S,LINE,,Line_ID3+1 ,Line_ID4
+LESIZE,ALL, , ,1
+LMESH,ALL
+
+/SOLU				!!!!enter solution processor
+/ESHAPE,1			!!!!solid shape display instead of simple lines (0)	
+NLGEOM,1			!!!!to include large deflection effects	
+OUTRES,ALL,ALL			!!!!write all solutions for all time steps
+SOLCONTROL,ON,ON  		!!!!doesn't seem to do anything		
+AUTOTS,ON			!!!!use automatic time stepping
+NEQIT,10				!!!!allow 10 substeps per iteration (good for non-linear analysis), normally 15-26
+NSUBST,substeps ,,substeps 		!!!!defines size of first substep, minimum number of substeps to be taken
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!First OneDOF Motion Output Is Free!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+TIME,1				!!!!sets time for a load step
+DK,12,UX,Dinput		!!!!Defines DOF constraints
+DK,13,ALL
+DK,14,ALL				!!this was 16, before but now 14 for parallel
+DK,18,ALL				!!this was 20, before but now 18 for parallel
+DK,19,ALL
+DK,17,ALL
+
+!DK,12,UY,UZ,ROTX,ROTY,ROTZ
+!DK,1,UY,UZ,ROTX,ROTY,ROTZ
+SOLVE
+
+
+KSEL,S,,,12			!select keypoint 1
+NSLK,S				!select the node at keypoint 1
+*GET,K12,NODE,,NUM,MIN		!assign the ID: K1 to this node
+ALLSEL,ALL
+
+KSEL,S,,,17			!select keypoint 1
+NSLK,S				!select the node at keypoint 1
+*GET,K17,NODE,,NUM,MIN		!assign the ID: K1 to this node
+ALLSEL,ALL
+
+!TIME,2
+!DK,1,ux,-Dinput
+!SOLVE
+
+
+/OUTPUT,'C:\Users\Luuk Samuels\Documents\TU Delft\Master\Thesis\Ansys\InnyOutyStiffy\POST','txt'
+
+/INPUT,'EXPORT','mac','C:\Users\Luuk Samuels\Documents\TU Delft\Master\Thesis\Ansys\InnyOutyStiffy\'

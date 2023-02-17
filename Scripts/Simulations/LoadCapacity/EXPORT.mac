@@ -1,0 +1,55 @@
+
+
+FINISH
+/POST26 
+FILE,'file','rst','.' 		!!!!this might lead to problems if not in the correct directory, or if i don't change name 
+!/UI,COLL,1                 !!!!opens GUI
+NUMVAR,200                  !!!!number of variables allowed in POST26
+SOLU,191,NCMIT  			!!!!solution summary data per substep to be stored, reference number, NCMIT: cumulative number of iterations
+STORE,MERGE                 !!!!stores data in the database
+FILLDATA,191,,,,1,1         !!!!Fills a variable by a ramp function???
+REALVAR,191,191 			!!!!creates the variable to only be real
+
+NSOL,2,K12,U,X, Din,		!!!!specifies nodal data to be stored, reference number, node number, displacement in x, variable name given
+STORE,MERGE 
+
+NSOL,3,K17,U,Y, Dout,   
+STORE,MERGE 
+
+RFORCE,4,K12,F,X, Fin   
+STORE,MERGE 
+
+RFORCE,5,K17,F,Y,Fout
+STORE,MERGE
+
+*CREATE,scratch,gui 
+*DEL,_P26_EXPORT
+*DIM,_P26_EXPORT,TABLE,250,5
+VGET,_P26_EXPORT(1,0),1 
+VGET,_P26_EXPORT(1,1),2 
+VGET,_P26_EXPORT(1,2),3 
+VGET,_P26_EXPORT(1,3),4 
+VGET,_P26_EXPORT(1,4),5
+/OUTPUT,'Results','csv','../InnyOutyStiffy'   
+*VWRITE,'TIME','Din','Dout','Fin','Fout'  
+%C, %C, %C, %C, %C  
+*VWRITE,_P26_EXPORT(1,0),_P26_EXPORT(1,1),_P26_EXPORT(1,2),_P26_EXPORT(1,3),_P26_EXPORT(1,4) 
+%G, %G, %G, %G, %G 
+/OUTPUT,TERM
+*END
+/INPUT,scratch,gui  
+
+!/OUTPUT,'C:\Users\Luuk Samuels\Documents\TU Delft\Master\Thesis\Ansys\InnyOutyStiffy\POST','txt'
+
+!FINISH
+!/POST1
+
+!SET,,, ,,, ,10 
+!*GET, VMS5, SECR, , S, EQV, Max
+
+!/OUTPUT, 'VMS', 'txt',
+!*VWRITE,VMS5
+!%G
+
+!/OUTPUT,TERM
+/OUTPUT,'C:\Users\Luuk Samuels\Documents\TU Delft\Master\Thesis\Ansys\InnyOutyStiffy\POST','txt'
