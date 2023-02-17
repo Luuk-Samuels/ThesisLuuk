@@ -10,3 +10,5 @@ REGARDING THE TESTS:
 12_2, displacement from 0 to -3 to 3 to 0 mm. 
 12_3, displacement from 3 to -3 to 3 mm. 
 12_4, displacement from -3 to 3 to -3 mm. 
+
+22_1, This is the test that was used for stress relaxation in supplementary material, displacement from 0 to 1 to 0 mm. 
