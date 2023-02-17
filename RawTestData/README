@@ -1,0 +1,12 @@
+Position_vs_time.txt: These files contain the output displacement over time for the experimental prototype data
+
+Test.xlxs: these files contain the Input displacement and Force at the input over time. 
+
+Test.mp4: these are the videos used to get the corresponding output displacement data
+
+REGARDING THE TESTS:
+
+12_1, displacement from 0 to 3 to -3 to 0 mm. 
+12_2, displacement from 0 to -3 to 3 to 0 mm. 
+12_3, displacement from 3 to -3 to 3 mm. 
+12_4, displacement from -3 to 3 to -3 mm. 
